@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to HealthQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f1f8ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background-color: white;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-custom {
+            background-color: #007bff;
+        }
+        .navbar-custom .nav-link {
+            color: white;
+            font-weight: 500;
+        }
+        .navbar-custom .nav-link:hover {
+            background-color: #0056b3;
+            border-radius: 5px;
+        }
+        .hero-video {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    object-fit: cover;
+    margin-top: 20px;
+}
+        footer {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .notification-icon {
+            font-size: 24px;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        .specialist-card:hover {
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+</head>
+<body>
+
+    {% load static %}
+
+    <!-- Header -->
+    <div class="header">
+        <img src="{%static 'logo.jpeg'%}" width="50" alt="HealthQ Logo">
+        <i class="bi bi-bell-fill notification-icon"></i>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white" href="#">HealthQ</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon text-white"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'patient_register' %}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'queue_management' %}">Queue</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'bed_status' %}">Bed Status</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'doctor_assignment' %}">Doctor Assignment Panel</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact_us' %}">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+<!-- Hero Video -->
+<div class="container mt-4">
+    <video autoplay muted loop playsinline class="hero-img rounded" width="100%" height="auto">
+        <source src="{% static 'hero.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+    <!-- Specialities Section -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Our Specialities</h2>
+    <div class="row text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 shadow-sm specialist-card" data-speciality="cardiology">
+                <img src="{% static 'cardio.jpeg' %}" class="card-img-top" alt="Cardiology">
+                <div class="card-body">
+                    <h5 class="card-title">Cardiology</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 shadow-sm specialist-card" data-speciality="neurology">
+                <img src="{% static 'neuro.jpeg' %}" class="card-img-top" alt="Neurology">
+                <div class="card-body">
+                    <h5 class="card-title">Neurology</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 shadow-sm specialist-card" data-speciality="orthopedics">
+                <img src="{% static 'ortho.jpeg' %}" class="card-img-top" alt="Orthopedics">
+                <div class="card-body">
+                    <h5 class="card-title">Orthopedics</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 shadow-sm specialist-card" data-speciality="pediatrics">
+                <img src="{% static 'pedia.jpeg' %}" class="card-img-top" alt="Pediatrics">
+                <div class="card-body">
+                    <h5 class="card-title">Pediatrics</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Doctors List Section -->
+<div class="container mt-5" id="doctors-section" style="display: none;">
+    <h3 class="text-center mb-4" id="dept-title"></h3>
+    <div class="row" id="doctor-list">
+        <!-- Doctor cards will be inserted here dynamically -->
+    </div>
+</div>
+
+<script>
+    const doctors = {
+        cardiology: [
+            { name: "Dr. A. Sharma", image: "{% static 'male_doc1.jpeg' %}" },
+            { name: "Dr. Neha Verma", image: "{% static 'female_doc1.jpeg' %}" }
+        ],
+        neurology: [
+            { name: "Dr. Rahul Jain", image: "{% static 'male_doc2.jpeg' %}" },
+            { name: "Dr. Meera Kapoor", image: "{% static 'female_doc2.jpeg' %}" }
+        ],
+        orthopedics: [
+            { name: "Dr. Vikram Roy", image: "{% static 'male_doc3.jpeg' %}" },
+            { name: "Dr. Anjali Sen", image: "{% static 'female_doc3.jpeg' %}" }
+        ],
+        pediatrics: [
+            { name: "Dr. Sonal Gupta", image: "{% static 'female_doc5.jpeg' %}" },
+            { name: "Dr. Priti Sinha", image: "{% static 'female_doc4.jpeg' %}" }
+        ]
+    };
+
+    document.querySelectorAll('.specialist-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const dept = card.getAttribute('data-speciality');
+            const docList = doctors[dept];
+            const listContainer = document.getElementById('doctor-list');
+            const section = document.getElementById('doctors-section');
+            const title = document.getElementById('dept-title');
+
+            // Clear previous
+            listContainer.innerHTML = '';
+            title.textContent = `Doctors in ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
+
+            // Add new
+            docList.forEach(doc => {
+                const div = document.createElement('div');
+                div.className = 'col-md-3 mb-4';
+                div.innerHTML = `
+                    <div class="card shadow-sm">
+                        <img src="${doc.image}" class="card-img-top" alt="${doc.name}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">${doc.name}</h5>
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+
+            section.style.display = 'block';
+            section.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+</script>
+
+    <!-- Footer Start -->
+<footer style="background-color: #fff; padding: 40px 20px; font-family: 'Poppins', sans-serif; border-top: 1px solid #eee;">
+    <div style="max-width: 1200px; margin: auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;">
+      
+      <!-- Logo & About -->
+      <div style="flex: 1; min-width: 250px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <img src="{%static 'logo.jpeg'%}" alt="HealthQ Logo" style="width: 40px;">
+          <h2 style="color: #023e8a; font-weight: 600;">HealthQ</h2>
+        </div>
+        <p style="margin-top: 15px; color: #555;">
+          HealthQ is a smart hospital queue and resource management platform that enhances patient experience and optimizes healthcare resources across cities.
+        </p>
+      </div>
+  
+      <!-- Company Links -->
+      <div style="flex: 1; min-width: 200px;">
+        <h3 style="font-weight: bold;">COMPANY</h3>
+        <ul style="list-style: none; padding: 0; margin-top: 15px; color: #555;">
+          <li><a href="#" style="text-decoration: none; color: #555;">Home</a></li>
+          <li><a href="#" style="text-decoration: none; color: #555;">About Us</a></li>
+          <li><a href="#" style="text-decoration: none; color: #555;">Features</a></li>
+          <li><a href="#" style="text-decoration: none; color: #555;">Privacy Policy</a></li>
+        </ul>
+      </div>
+  
+      <!-- Contact Info -->
+      <div style="flex: 1; min-width: 200px;">
+        <h3 style="font-weight: bold;">GET IN TOUCH</h3>
+        <p style="margin-top: 15px; color: #555;">+91-99999-99999</p>
+        <p style="color: #555;">healthq.support@gmail.com</p>
+      </div>
+    </div>
+  
+    <hr style="margin: 40px auto 20px; border-color: #eee;">
+    <p style="text-align: center; color: #777;">Copyright 2024 © HealthQ — All Rights Reserved.</p>
+  </footer>
+  <!-- Footer End -->
+  
+
+</body>
+</html>

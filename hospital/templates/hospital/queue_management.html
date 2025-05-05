@@ -1,0 +1,13 @@
+<!-- queue_management.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2>OPD Queue Management</h2>
+<div class="queue-section">
+  <h3>Waiting</h3>
+  {% for p in waiting_patients %}<p>{{ p.name }} - {{ p.token }}</p>{% endfor %}
+  <h3>In Progress</h3>
+  {% for p in in_progress_patients %}<p>{{ p.name }} - {{ p.token }}</p>{% endfor %}
+  <h3>Completed</h3>
+  {% for p in completed_patients %}<p>{{ p.name }} - {{ p.token }}</p>{% endfor %}
+</div>
+{% endblock %}

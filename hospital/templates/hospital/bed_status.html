@@ -1,0 +1,16 @@
+<!-- bed_status.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2>Bed Status</h2>
+<table>
+  <tr><th>Hospital</th><th>Total Beds</th><th>Available</th><th>Occupied</th></tr>
+  {% for bed in beds %}
+    <tr>
+      <td>{{ bed.hospital.name }}</td>
+      <td>{{ bed.total }}</td>
+      <td>{{ bed.available }}</td>
+      <td>{{ bed.occupied }}</td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

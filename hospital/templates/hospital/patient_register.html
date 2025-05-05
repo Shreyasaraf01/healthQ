@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Patient</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 12px;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+        }
+
+        .back-button a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .back-button a:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            margin-top: 20px;
+            text-align: center;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Register Patient</h2>
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Form fields here (unchanged) -->
+
+            <label for="name">Patient Name</label>
+            <input type="text" name="name" id="name" placeholder="Enter patient name" required>
+
+            <label for="age">Age</label>
+            <input type="number" name="age" id="age" placeholder="Enter age" required>
+
+            <label for="dob">Date of Birth</label>
+            <input type="date" name="dob" id="dob" required>
+
+            <label for="situation">Current Situation</label>
+            <textarea name="situation" id="situation" rows="2" required></textarea>
+
+            <label for="critical">Is it Critical?</label>
+            <select name="critical" id="critical" required>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+
+            <label for="symptoms">Symptoms</label>
+            <textarea name="symptoms" id="symptoms" rows="3" required></textarea>
+
+            <label for="email">Email ID</label>
+            <input type="email" name="email" id="email" required>
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" name="phone" id="phone" required pattern="[0-9]{10}">
+
+            <label for="familyPhone">Family Mobile Number</label>
+            <input type="tel" name="familyPhone" id="familyPhone" required pattern="[0-9]{10}">
+
+            <label for="appointmentDate">Date of Appointment</label>
+            <input type="date" name="appointmentDate" id="appointmentDate" required>
+
+            <label for="hospital">Select Hospital</label>
+            <select name="hospital" id="hospital" required>
+                {% for hospital in hospitals %}
+                    <option value="{{ hospital.id }}">{{ hospital.name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Generate OPD Token</button>
+        </form>
+
+        {% if token %}
+            <p>Generated Token: <strong>{{ token }}</strong></p>
+        {% endif %}
+
+        <div class="back-button">
+            <a href="{% url 'home' %}">← Go Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>

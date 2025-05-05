@@ -1,0 +1,28 @@
+<!-- doctor_assignment.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Doctor Assignment</h2>
+
+<table border="1">
+  <tr>
+    <th>Doctor ID</th>
+    <th>Name</th>
+    <th>Department</th>
+    <th>Status</th>
+  </tr>
+
+  {% for doctor in doctors %}
+    <tr>
+      <td>{{ doctor.id }}</td>
+      <td>{{ doctor.name }}</td>
+      <td>{{ doctor.department }}</td>
+      <td>{{ doctor.status }}</td>
+    </tr>
+  {% empty %}
+    <tr>
+      <td colspan="4">No doctors available.</td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

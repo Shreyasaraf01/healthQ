@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HealthQ Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .cards {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 20px;
+      color: #555;
+    }
+
+    .card p {
+      font-size: 30px;
+      margin-top: 10px;
+      color: #007bff;
+    }
+
+    .charts {
+      display: flex;
+      justify-content: center;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    canvas {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .back-home {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease;
+    }
+
+    .back-home:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 768px) {
+      .cards {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧑‍⚕️ Hospital Patient Dashboard</h1>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Total Hospitals</h3>
+      <p>{{ hospital_count }}</p>
+    </div>
+    <div class="card">
+      <h3>Total Patients</h3>
+      <p>{{ patient_count }}</p>
+    </div>
+  </div>
+
+  <div class="charts">
+    <canvas id="barChart" height="200"></canvas>
+  </div>
+
+  <script>
+    // ✅ Safe parsing of Django context into JavaScript variables
+    const hospitalNames = JSON.parse('{{ hospital_names|escapejs }}');
+    const patientCounts = JSON.parse('{{ patient_counts|escapejs }}');
+
+    const barCtx = document.getElementById('barChart').getContext('2d');
+    new Chart(barCtx, {
+      type: 'bar',
+      data: {
+        labels: hospitalNames,
+        datasets: [{
+          label: 'Number of Patients',
+          data: patientCounts,
+          backgroundColor: '#007bff'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Patients per Hospital'
+          }
+        }
+      }
+    });
+  </script>
+
+  <!-- ✅ Back to Home Button -->
+  <a href="{% url 'home' %}" class="back-home">← Go back to Home</a>
+
+</body>
+</html>
