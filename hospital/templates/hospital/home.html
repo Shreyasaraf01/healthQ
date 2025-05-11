@@ -208,6 +208,94 @@
     });
 </script>
 
+<!-- Health Bot Section -->
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Health Assistant</h5>
+                </div>
+                <div class="card-body">
+                    <div id="chat-messages" class="mb-3" style="height: 300px; overflow-y: auto; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
+                        <!-- Messages will appear here -->
+                    </div>
+                    <form id="healthBotForm" class="mt-3">
+                        <div class="input-group">
+                            <input type="text" id="message" class="form-control" placeholder="Ask a health question...">
+                            <button type="submit" class="btn btn-primary">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #chat-messages {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        background-color: #f8f9fa;
+    }
+    .message {
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        border-radius: 15px;
+        max-width: 80%;
+        word-wrap: break-word;
+    }
+    .user-message {
+        background-color: #007bff;
+        color: white;
+        margin-left: auto;
+    }
+    .bot-message {
+        background-color: #e9ecef;
+        color: black;
+    }
+</style>
+
+<script>
+document.getElementById('healthBotForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const messageInput = document.getElementById('message');
+    const message = messageInput.value.trim();
+    
+    if (!message) return;
+
+    // Add user message to chat
+    addMessage(message, 'user');
+    messageInput.value = '';
+
+    try {
+        const response = await fetch('/api/health-bot/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message })
+        });
+        const data = await response.json();
+        // Add bot response to chat
+        addMessage(data.reply, 'bot');
+    } catch (error) {
+        console.error('Error:', error);
+        addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+    }
+};
+
+function addMessage(text, sender) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message`;
+    messageDiv.textContent = text;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+</script>
+
     <!-- Footer Start -->
 <footer style="background-color: #fff; padding: 40px 20px; font-family: 'Poppins', sans-serif; border-top: 1px solid #eee;">
     <div style="max-width: 1200px; margin: auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;">
@@ -246,7 +334,64 @@
     <p style="text-align: center; color: #777;">Copyright 2024 © HealthQ — All Rights Reserved.</p>
   </footer>
   <!-- Footer End -->
-  
+  <!-- Health Bot Widget (Bootstrap version, fixed for multiple messages) -->
+<div id="health-bot" style="position: fixed; bottom: 32px; right: 32px; z-index: 9999;">
+  <button id="bot-toggle" class="btn btn-primary btn-lg rounded-circle shadow" style="width:60px; height:60px; font-size: 28px; display: flex; align-items: center; justify-content: center;">
+    <span class="bi bi-chat-dots"></span>
+  </button>
+  <div id="bot-window" class="card shadow-lg" style="display: none; width: 350px; height: 450px; position: absolute; bottom: 70px; right: 0;">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <span><span class="bi bi-robot"></span> Health Bot</span>
+      <button type="button" class="btn-close btn-close-white" aria-label="Close" onclick="document.getElementById('bot-window').style.display='none';"></button>
+    </div>
+    <div id="bot-messages" class="card-body overflow-auto" style="height: 300px; background: #f8f9fa; font-size: 15px;"></div>
+    <form id="bot-form" class="card-footer d-flex p-2 bg-light">
+      <input id="bot-input" type="text" class="form-control me-2" placeholder="Ask me anything..." autocomplete="off">
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<script>
+  const toggle = document.getElementById('bot-toggle');
+  const windowEl = document.getElementById('bot-window');
+  const form = document.getElementById('bot-form');
+  const input = document.getElementById('bot-input');
+  const messages = document.getElementById('bot-messages');
+
+  toggle.onclick = () => {
+    windowEl.style.display = (windowEl.style.display === 'none' || windowEl.style.display === '') ? 'block' : 'none';
+  };
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const userMsg = input.value.trim();
+    if (!userMsg) return;
+    messages.innerHTML += `<div class="text-end mb-2"><span class="badge bg-primary text-wrap">${userMsg}</span></div>`;
+    // Use a unique id for each bot-typing message
+    const typingId = 'bot-typing-' + Date.now() + Math.random();
+    messages.innerHTML += `<div class="text-start mb-2" id="${typingId}"><span class="badge bg-secondary text-wrap">...</span></div>`;
+    messages.scrollTop = messages.scrollHeight;
+    input.value = '';
+    try {
+      const response = await fetch("{% url 'health_bot_api' %}", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: userMsg})
+      });
+      const data = await response.json();
+      const typingElem = document.getElementById(typingId);
+      if (typingElem) {
+        typingElem.innerHTML = `<span class="badge bg-light text-dark text-wrap">${data.reply}</span>`;
+      }
+      messages.scrollTop = messages.scrollHeight;
+    } catch {
+      const typingElem = document.getElementById(typingId);
+      if (typingElem) {
+        typingElem.innerHTML = `<span class="badge bg-danger text-wrap">Sorry, I couldn't connect to the health bot.</span>`;
+      }
+    }
+  };
+</script>
 
 </body>
 </html>

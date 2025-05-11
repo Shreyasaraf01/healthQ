@@ -1,13 +1,80 @@
-<!-- queue_management.html -->
-{% extends 'base.html' %}
-{% block content %}
-<h2>OPD Queue Management</h2>
-<div class="queue-section">
-  <h3>Waiting</h3>
-  {% for p in waiting_patients %}<p>{{ p.name }} - {{ p.token }}</p>{% endfor %}
-  <h3>In Progress</h3>
-  {% for p in in_progress_patients %}<p>{{ p.name }} - {{ p.token }}</p>{% endfor %}
-  <h3>Completed</h3>
-  {% for p in completed_patients %}<p>{{ p.name }} - {{ p.token }}</p>{% endfor %}
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Queue Status</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f3f7f9;
+    }
+    h1 {
+      text-align: center;
+      color: #2a3f54;
+    }
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    thead {
+      background-color: #2a3f54;
+      color: white;
+    }
+    .predicted {
+      font-weight: bold;
+      color: #2a3f54;
+    }
+    .na {
+      color: #c0392b;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <a href="{% url 'home' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    Go Back to Home
+  </a>
+  <h1>OPD Queue Status with AI Predictions</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Token No.</th>
+        <th>Hospital</th>
+        <th>Patient Name</th>
+        <th>Predicted Waiting Time (mins)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if predictions %}
+        {% for prediction in predictions %}
+        <tr>
+          <td>{{ prediction.queue_position }}</td>
+          <td>{{ prediction.department }}</td>
+          <td>{{ prediction.name }}</td>
+          <td class="predicted">
+            {% if prediction.predicted_waiting_time == "N/A" %}
+              <span class="na">N/A</span>
+            {% else %}
+              {{ prediction.predicted_waiting_time }}
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="4" style="text-align:center; color:#888;">No patients in the queue.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</body>
+</html>

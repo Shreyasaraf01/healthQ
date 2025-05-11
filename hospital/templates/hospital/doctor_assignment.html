@@ -1,28 +1,127 @@
-<!-- doctor_assignment.html -->
 {% extends 'base.html' %}
 
+{% block show_navbar %}
+{% endblock %}
+
 {% block content %}
-<h2>Doctor Assignment</h2>
+<a href="{% url 'home' %}" class="go-home-btn">Go Back to Home</a>
+<div class="doctor-assignment-container">
+    <h2 class="doctor-title">Doctor Assignment</h2>
+    <div class="doctor-table-wrapper">
+        <table class="doctor-table">
+            <thead>
+                <tr>
+                    <th>Doctor ID</th>
+                    <th>Name</th>
+                    <th>Specialization</th>
+                    <th>Status</th>
+                    <th>Hospital</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doctor in doctors %}
+                <tr>
+                    <td>{{ doctor.id }}</td>
+                    <td>Dr. {{ doctor.name }}</td>
+                    <td>{{ doctor.specialization }}</td>
+                    <td>
+                        <span class="badge {% if doctor.status == 'Available' %}badge-success{% else %}badge-danger{% endif %}">
+                            {{ doctor.status }}
+                        </span>
+                    </td>
+                    <td>{{ doctor.hospital.name }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No doctors available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<table border="1">
-  <tr>
-    <th>Doctor ID</th>
-    <th>Name</th>
-    <th>Department</th>
-    <th>Status</th>
-  </tr>
-
-  {% for doctor in doctors %}
-    <tr>
-      <td>{{ doctor.id }}</td>
-      <td>{{ doctor.name }}</td>
-      <td>{{ doctor.department }}</td>
-      <td>{{ doctor.status }}</td>
-    </tr>
-  {% empty %}
-    <tr>
-      <td colspan="4">No doctors available.</td>
-    </tr>
-  {% endfor %}
-</table>
+<style>
+body {
+    background: #f5f7fa;
+}
+.doctor-assignment-container {
+    max-width: 1100px;
+    margin: 40px auto 0 auto;
+    padding: 32px 24px 24px 24px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.10);
+}
+.doctor-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 28px;
+    color: #1a237e;
+    letter-spacing: 1px;
+    text-align: center;
+}
+.doctor-table-wrapper {
+    overflow-x: auto;
+}
+.doctor-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #fff;
+    font-size: 1.08rem;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.doctor-table th, .doctor-table td {
+    padding: 16px 18px;
+    text-align: left;
+    white-space: nowrap;
+}
+.doctor-table th {
+    background: #283593;
+    color: #fff;
+    font-weight: 600;
+    border-bottom: 2px solid #1a237e;
+}
+.doctor-table tr:nth-child(even) {
+    background: #f0f4ff;
+}
+.doctor-table tr:hover {
+    background: #e3eafc;
+    transition: background 0.2s;
+}
+.badge {
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+.badge-success {
+    background-color: #43a047;
+    color: #fff;
+}
+.badge-danger {
+    background-color: #e53935;
+    color: #fff;
+}
+.text-center {
+    text-align: center;
+}
+@media (max-width: 700px) {
+    .doctor-assignment-container {
+        padding: 10px 2px;
+    }
+    .doctor-title {
+        font-size: 1.2rem;
+    }
+    .doctor-table th, .doctor-table td {
+        padding: 8px 6px;
+        font-size: 0.95rem;
+    }
+}
+</style>
 {% endblock %}

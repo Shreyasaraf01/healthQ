@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Admitted</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .patient-info {
+            text-align: left;
+            margin: 20px 0;
+        }
+
+        .patient-info p {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .patient-info strong {
+            color: #2a3f54;
+        }
+
+        .bed-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+
+        .token {
+            font-size: 24px;
+            color: #28a745;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Patient Admitted Successfully</h1>
+        
+        <div class="info-box">
+            <p>Critical patient has been admitted directly to the hospital.</p>
+        </div>
+
+        <div class="patient-info">
+            <p><strong>Patient Name:</strong> {{ patient.name }}</p>
+            <p><strong>Age:</strong> {{ patient.age }}</p>
+            <p><strong>Condition:</strong> {{ patient.condition }}</p>
+            <p><strong>Hospital:</strong> {{ hospital.name }}</p>
+            <p><strong>Registration Time:</strong> {{ patient.registration_time|date:"F j, Y, g:i a" }}</p>
+        </div>
+
+        <div class="bed-info">
+            <p><strong>Bed Number:</strong> {{ patient.bed_number }}</p>
+            <p><strong>Token:</strong> {{ patient.token }}</p>
+        </div>
+
+        <a href="{% url 'home' %}" class="back-button">← Return to Home</a>
+    </div>
+</body>
+</html>

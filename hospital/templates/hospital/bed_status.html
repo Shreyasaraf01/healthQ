@@ -1,16 +1,106 @@
-<!-- bed_status.html -->
-{% extends 'base.html' %}
-{% block content %}
-<h2>Bed Status</h2>
-<table>
-  <tr><th>Hospital</th><th>Total Beds</th><th>Available</th><th>Occupied</th></tr>
-  {% for bed in beds %}
-    <tr>
-      <td>{{ bed.hospital.name }}</td>
-      <td>{{ bed.total }}</td>
-      <td>{{ bed.available }}</td>
-      <td>{{ bed.occupied }}</td>
-    </tr>
-  {% endfor %}
-</table>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bed Availability</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f3f7f9;
+    }
+    h1 {
+      text-align: center;
+      color: #2a3f54;
+    }
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    thead {
+      background-color: #2a3f54;
+      color: white;
+    }
+    .available {
+      background-color: #c3e6cb;
+      color: #155724;
+    }
+    .full {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+<body>
+  <a href="{% url 'home' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    Go Back to Home
+  </a>
+  <h1>Hospital Bed Status</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Ward</th>
+        <th>Total Beds</th>
+        <th>Occupied</th>
+        <th>Available</th>
+        <th>Status</th>
+        <th>Predicted Discharges</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if bed_predictions %}
+        {% for ward_data in bed_predictions %}
+        <tr>
+          <td>{{ ward_data.ward }}</td>
+          <td>{{ ward_data.total_beds }}</td>
+          <td>{{ ward_data.occupied }}</td>
+          <td>{{ ward_data.available }}</td>
+          <td class="{% if ward_data.available == 0 %}full{% else %}available{% endif %}">
+            {% if ward_data.available == 0 %}Full{% else %}Available{% endif %}
+          </td>
+          <td>{{ ward_data.predicted_discharges }}</td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="6" style="text-align:center; color:#888;">No bed data available.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+
+  <h2>Admitted Patients</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Patient Name</th>
+        <th>Ward</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if admitted_patients %}
+        {% for patient in admitted_patients %}
+        <tr>
+          <td>{{ patient.name }}</td>
+          <td>{{ patient.hospital.name }}</td>
+          <td>{{ patient.condition }}</td>
+        </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="3" style="text-align:center; color:#888;">No admitted patients.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</body>
+</html>

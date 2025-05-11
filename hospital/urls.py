@@ -11,6 +11,7 @@ from .views import (
     queue_management,
     bed_status,
     contact_us,
+    health_bot_api,
 )
 
 urlpatterns = [
@@ -26,5 +27,6 @@ urlpatterns = [
     path('queue-management/', queue_management, name='queue_management'),  # HTML view
     path('bed-status/', bed_status, name='bed_status'),  # HTML view
     path('contact-us/', contact_us, name='contact_us'),  # HTML view
+    path('api/health-bot/',health_bot_api, name = 'health_bot_api'),
 ]
 
