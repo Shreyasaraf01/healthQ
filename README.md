@@ -67,7 +67,7 @@ HealthQ is an intelligent hospital management system that leverages AI to optimi
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/healthQ.git
+git clone https://github.com/Shreyasaraf01/healthQ.git
 cd healthQ
 ```
 
