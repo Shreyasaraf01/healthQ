@@ -124,11 +124,7 @@ The model will be automatically trained on historical data and saved for future 
 
 ## 🌟 Future Scope
 
-- Multi-hospital network integration
-- NLP-based patient interaction chatbots
-- Government health portal integration
 - Advanced predictive analytics
-- Mobile application development
 - Integration with IoT devices for real-time monitoring
 
 ## 🤝 Contributing
