@@ -32,6 +32,12 @@ HealthQ is an intelligent hospital management system that leverages AI to optimi
 - Equipment utilization tracking
 - Emergency resource planning
 
+### 5. City-Wide Integration
+- Unified dashboard for multiple hospitals across the city
+- Inter-hospital resource coordination and referral management
+- Centralized monitoring of OPD queues, bed occupancy, and emergency capacity
+- Scalable architecture for expansion across urban healthcare networks
+
 ## 🛠️ Technical Stack
 
 ### Frontend
