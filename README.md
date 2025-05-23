@@ -139,11 +139,6 @@ The model will be automatically trained on historical data and saved for future 
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
-
-- Thanks to all contributors and team members
-- Special thanks to our mentors and advisors
-- Inspired by the need for better healthcare management systems
 
 ---
 
@@ -151,6 +146,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support, email: shreyasaraf765@gmail.com
 
----
-
-Made with ❤️ by Team Avalanche
