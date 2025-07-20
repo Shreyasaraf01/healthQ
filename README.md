@@ -1,4 +1,4 @@
-# 🏥 HealthQ: AI-Powered Hospital Queue and Resource Management System
+# 🏥 HealthQ: AI-Powered Hospital Queue and Resource Management System.
 
 ## 📋 Overview
 HealthQ is an intelligent hospital management system that leverages AI to optimize patient flow, predict wait times, and manage hospital resources efficiently. The system helps reduce waiting times, improve resource allocation, and enhance overall patient experience.
