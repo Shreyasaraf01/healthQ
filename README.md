@@ -3,6 +3,13 @@
 ## 📋 Overview
 HealthQ is an intelligent hospital management system that leverages AI to optimize patient flow, predict wait times, and manage hospital resources efficiently. The system helps reduce waiting times, improve resource allocation, and enhance overall patient experience.
 
+## 🧠 Team: The Avalanche
+- **Riya Saraf** (Leader) – III Year, Baderia Global Institute of Engineering and Management  
+- **Shreya Saraf** – III Year  
+- **Sonam Nimje** – III Year  
+- **Sameeksha Vishwakarma** – III Year  
+
+
 ## 🎯 Key Features
 
 ### 1. AI-Powered Wait Time Prediction
@@ -32,11 +39,14 @@ HealthQ is an intelligent hospital management system that leverages AI to optimi
 - Equipment utilization tracking
 - Emergency resource planning
 
+
 ### 5. City-Wide Integration
 - Unified dashboard for multiple hospitals across the city
 - Inter-hospital resource coordination and referral management
 - Centralized monitoring of OPD queues, bed occupancy, and emergency capacity
 - Scalable architecture for expansion across urban healthcare networks
+
+
 
 ## 🛠️ Technical Stack
 
@@ -60,6 +70,9 @@ HealthQ is an intelligent hospital management system that leverages AI to optimi
 
 ### Authentication & Security
 - Django Authentication System
+
+- JWT for API security
+
 - Role-based access control
 
 ## 🚀 Getting Started
@@ -125,6 +138,10 @@ The model will be automatically trained on historical data and saved for future 
 ## 🌟 Future Scope
 
 - Advanced predictive analytics
+- Multi-hospital network integration
+- NLP-based patient interaction chatbots
+- Government health portal integration
+- Mobile application development
 - Integration with IoT devices for real-time monitoring
 
 ## 🤝 Contributing
@@ -139,6 +156,11 @@ The model will be automatically trained on historical data and saved for future 
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 🙏 Acknowledgments
+
+- Thanks to all contributors and team members
+- Special thanks to our mentors and advisors
+- Inspired by the need for better healthcare management systems
 
 ---
 
@@ -146,3 +168,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support, email: shreyasaraf765@gmail.com
 
+---
+
+Made with ❤️ by Team Avalanche
