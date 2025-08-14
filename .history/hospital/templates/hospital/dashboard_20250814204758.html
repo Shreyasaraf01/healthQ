@@ -20,6 +20,7 @@
     <canvas id="barChart" height="200"></canvas>
 </div>
 
+<a href="{% url 'home' %}" class="back-home">← Go back to Home</a>
 
 <style>
     body {
@@ -95,7 +96,26 @@
       box-shadow: 0 2px 8px rgba(30, 64, 175, 0.06);
     }
 
-    
+    .back-home {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: linear-gradient(90deg, #1976d2 60%, #64b5f6 100%);
+      color: white;
+      padding: 12px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.13);
+      transition: background 0.3s, box-shadow 0.3s;
+      letter-spacing: 0.5px;
+      z-index: 100;
+    }
+    .back-home:hover {
+      background: linear-gradient(90deg, #1565c0 60%, #1976d2 100%);
+      box-shadow: 0 8px 24px rgba(30, 64, 175, 0.18);
+    }
 
     @media (max-width: 900px) {
       .charts {

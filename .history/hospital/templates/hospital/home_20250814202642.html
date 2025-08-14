@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to HealthQ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f1f8ff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .header {
+            background-color: white;
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-custom {
+            background-color: #007bff;
+        }
+        .navbar-custom .nav-link {
+            color: white;
+            font-weight: 500;
+        }
+        .navbar-custom .nav-link:hover {
+            background-color: #0056b3;
+            border-radius: 5px;
+        }
+        .hero-video {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    object-fit: cover;
+    margin-top: 20px;
+}
+        footer {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .notification-icon {
+            font-size: 24px;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        .specialist-card:hover {
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+</head>
+<body>
+
+    {% load static %}
+
+    <!-- Header -->
+    <div class="header">
+        <img src="{%static 'logo.jpeg'%}" width="50" alt="HealthQ Logo">
+        <i class="bi bi-bell-fill notification-icon"></i>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white" href="#">HealthQ</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon text-white"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'patient_register' %}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'queue_management' %}">Queue</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'bed_status' %}">Bed Status</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'doctor_assignment' %}">Doctor Assignment Panel</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact_us' %}">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+<!-- Hero Video -->
+<div class="container mt-4">
+    <video autoplay muted loop playsinline class="hero-img rounded" width="100%" height="auto">
+        <source src="{% static 'hero.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+    <!-- Specialities Section -->
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Our Specialities</h2>
+    <div class="row text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 shadow-sm specialist-card" data-speciality="cardiology">
+                <img src="{% static 'cardio.jpeg' %}" class="card-img-top" alt="Cardiology">
+                <div class="card-body">
+                    <h5 class="card-title">Cardiology</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 shadow-sm specialist-card" data-speciality="neurology">
+                <img src="{% static 'neuro.jpeg' %}" class="card-img-top" alt="Neurology">
+                <div class="card-body">
+                    <h5 class="card-title">Neurology</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 shadow-sm specialist-card" data-speciality="orthopedics">
+                <img src="{% static 'ortho.jpeg' %}" class="card-img-top" alt="Orthopedics">
+                <div class="card-body">
+                    <h5 class="card-title">Orthopedics</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100 shadow-sm specialist-card" data-speciality="pediatrics">
+                <img src="{% static 'pedia.jpeg' %}" class="card-img-top" alt="Pediatrics">
+                <div class="card-body">
+                    <h5 class="card-title">Pediatrics</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Doctors List Section -->
+<div class="container mt-5" id="doctors-section" style="display: none;">
+    <h3 class="text-center mb-4" id="dept-title"></h3>
+    <div class="row" id="doctor-list">
+        <!-- Doctor cards will be inserted here dynamically -->
+    </div>
+</div>
+
+<script>
+    const doctors = {
+        cardiology: [
+            { name: "Dr. A. Sharma", image: "{% static 'male_doc1.jpeg' %}" },
+            { name: "Dr. Neha Verma", image: "{% static 'female_doc1.jpeg' %}" }
+        ],
+        neurology: [
+            { name: "Dr. Rahul Jain", image: "{% static 'male_doc2.jpeg' %}" },
+            { name: "Dr. Meera Kapoor", image: "{% static 'female_doc2.jpeg' %}" }
+        ],
+        orthopedics: [
+            { name: "Dr. Vikram Roy", image: "{% static 'male_doc3.jpeg' %}" },
+            { name: "Dr. Anjali Sen", image: "{% static 'female_doc3.jpeg' %}" }
+        ],
+        pediatrics: [
+            { name: "Dr. Sonal Gupta", image: "{% static 'female_doc5.jpeg' %}" },
+            { name: "Dr. Priti Sinha", image: "{% static 'female_doc4.jpeg' %}" }
+        ]
+    };
+
+    document.querySelectorAll('.specialist-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const dept = card.getAttribute('data-speciality');
+            const docList = doctors[dept];
+            const listContainer = document.getElementById('doctor-list');
+            const section = document.getElementById('doctors-section');
+            const title = document.getElementById('dept-title');
+
+            // Clear previous
+            listContainer.innerHTML = '';
+            title.textContent = `Doctors in ${dept.charAt(0).toUpperCase() + dept.slice(1)}`;
+
+            // Add new
+            docList.forEach(doc => {
+                const div = document.createElement('div');
+                div.className = 'col-md-3 mb-4';
+                div.innerHTML = `
+                    <div class="card shadow-sm">
+                        <img src="${doc.image}" class="card-img-top" alt="${doc.name}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">${doc.name}</h5>
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(div);
+            });
+
+            section.style.display = 'block';
+            section.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+</script>
+
+<!-- Health Bot Section -->
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Health Assistant</h5>
+                </div>
+                <div class="card-body">
+                    <div id="chat-messages" class="mb-3"
+                         style="height: 300px; overflow-y: auto; padding: 10px; background-color: #f8f9fa; border-radius: 4px;">
+                        <!-- Messages will appear here -->
+                    </div>
+                    <form id="healthBotForm" class="mt-3">
+                        <div class="input-group">
+                            <input type="text" id="message" class="form-control"
+                                   placeholder="Ask a health question...">
+                            <button type="submit" class="btn btn-primary">Send</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #chat-messages {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        background-color: #f8f9fa;
+    }
+    .message {
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        border-radius: 15px;
+        max-width: 80%;
+        word-wrap: break-word;
+    }
+    .user-message {
+        background-color: #007bff;
+        color: white;
+        margin-left: auto;
+    }
+    .bot-message {
+        background-color: #e9ecef;
+        color: black;
+    }
+</style>
+
+<script>
+document.getElementById('healthBotForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const messageInput = document.getElementById('message');
+    const message = messageInput.value.trim();
+    if (!message) return;
+
+    // Add user message to chat
+    addMessage(message, 'user');
+    messageInput.value = '';
+
+    try {
+        const response = await fetch("{% url 'health_bot_api' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken') // Add CSRF for Django
+            },
+            body: JSON.stringify({ message })
+        });
+        const data = await response.json();
+        addMessage(data.reply || "Sorry, I couldn't get a response.", 'bot');
+    } catch (error) {
+        console.error('Error:', error);
+        addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+    }
+};
+
+function addMessage(text, sender) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message`;
+    messageDiv.textContent = text;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Helper: Get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+
+    <!-- Footer Start -->
+<footer style="background-color: #fff; padding: 40px 20px; font-family: 'Poppins', sans-serif; border-top: 1px solid #eee;">
+    <div style="max-width: 1200px; margin: auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px;">
+      
+      <!-- Logo & About -->
+      <div style="flex: 1; min-width: 250px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <img src="{%static 'logo.jpeg'%}" alt="HealthQ Logo" style="width: 40px;">
+          <h2 style="color: #023e8a; font-weight: 600;">HealthQ</h2>
+        </div>
+        <p style="margin-top: 15px; color: #555;">
+          HealthQ is a smart hospital queue and resource management platform that enhances patient experience and optimizes healthcare resources across cities.
+        </p>
+      </div>
+  
+      <!-- Company Links -->
+      <div style="flex: 1; min-width: 200px;">
+        <h3 style="font-weight: bold;">COMPANY</h3>
+        <ul style="list-style: none; padding: 0; margin-top: 15px; color: #555;">
+          <li><a href="#" style="text-decoration: none; color: #555;">Home</a></li>
+          <li><a href="#" style="text-decoration: none; color: #555;">About Us</a></li>
+          <li><a href="#" style="text-decoration: none; color: #555;">Features</a></li>
+          <li><a href="#" style="text-decoration: none; color: #555;">Privacy Policy</a></li>
+        </ul>
+      </div>
+  
+      <!-- Contact Info -->
+      <div style="flex: 1; min-width: 200px;">
+        <h3 style="font-weight: bold;">GET IN TOUCH</h3>
+        <p style="margin-top: 15px; color: #555;">+91-99999-99999</p>
+        <p style="color: #555;">healthq.support@gmail.com</p>
+      </div>
+    </div>
+  
+    <hr style="margin: 40px auto 20px; border-color: #eee;">
+    <p style="text-align: center; color: #777;">Copyright 2024 © HealthQ — All Rights Reserved.</p>
+  </footer>
+  <!-- Footer End -->
+  <!-- Health Bot Widget (Bootstrap version, fixed for multiple messages) -->
+<div id="health-bot" style="position: fixed; bottom: 32px; right: 32px; z-index: 9999;">
+  <button id="bot-toggle" class="btn btn-primary btn-lg rounded-circle shadow" style="width:60px; height:60px; font-size: 28px; display: flex; align-items: center; justify-content: center;">
+    <span class="bi bi-chat-dots"></span>
+  </button>
+  <div id="bot-window" class="card shadow-lg" style="display: none; width: 350px; height: 450px; position: absolute; bottom: 70px; right: 0;">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <span><span class="bi bi-robot"></span> Health Bot</span>
+      <button type="button" class="btn-close btn-close-white" aria-label="Close" onclick="document.getElementById('bot-window').style.display='none';"></button>
+    </div>
+    <div id="bot-messages" class="card-body overflow-auto" style="height: 300px; background: #f8f9fa; font-size: 15px;"></div>
+    <form id="bot-form" class="card-footer d-flex p-2 bg-light">
+      <input id="bot-input" type="text" class="form-control me-2" placeholder="Ask me anything..." autocomplete="off">
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<script>
+  const toggle = document.getElementById('bot-toggle');
+  const windowEl = document.getElementById('bot-window');
+  const form = document.getElementById('bot-form');
+  const input = document.getElementById('bot-input');
+  const messages = document.getElementById('bot-messages');
+
+  toggle.onclick = () => {
+    windowEl.style.display = (windowEl.style.display === 'none' || windowEl.style.display === '') ? 'block' : 'none';
+  };
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    const userMsg = input.value.trim();
+    if (!userMsg) return;
+    messages.innerHTML += `<div class="text-end mb-2"><span class="badge bg-primary text-wrap">${userMsg}</span></div>`;
+    // Use a unique id for each bot-typing message
+    const typingId = 'bot-typing-' + Date.now() + Math.random();
+    messages.innerHTML += `<div class="text-start mb-2" id="${typingId}"><span class="badge bg-secondary text-wrap">...</span></div>`;
+    messages.scrollTop = messages.scrollHeight;
+    input.value = '';
+    try {
+      const response = await fetch("{% url 'health_bot_api' %}", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: userMsg})
+      });
+      const data = await response.json();
+      const typingElem = document.getElementById(typingId);
+      if (typingElem) {
+        typingElem.innerHTML = `<span class="badge bg-light text-dark text-wrap">${data.reply}</span>`;
+      }
+      messages.scrollTop = messages.scrollHeight;
+    } catch {
+      const typingElem = document.getElementById(typingId);
+      if (typingElem) {
+        typingElem.innerHTML = `<span class="badge bg-danger text-wrap">Sorry, I couldn't connect to the health bot.</span>`;
+      }
+    }
+  };
+</script>
+
+</body>
+</html>

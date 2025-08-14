@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
-
-{% block title %}Bed Availability{% endblock %}
-
-{% block content %}
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bed Availability</title>
+  <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
@@ -37,14 +38,14 @@
       background-color: #f8d7da;
       color: #721c24;
     }
-</style>
-
-<a href="{% url 'home' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+  </style>
+</head>
+<body>
+  <a href="{% url 'home' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
     Go Back to Home
-</a>
-
-<h1>Hospital Bed Status</h1>
-<table>
+  </a>
+  <h1>Hospital Bed Status</h1>
+  <table>
     <thead>
       <tr>
         <th>Ward</th>
@@ -75,10 +76,10 @@
         </tr>
       {% endif %}
     </tbody>
-</table>
+  </table>
 
-<h2>Admitted Patients</h2>
-<table>
+  <h2>Admitted Patients</h2>
+  <table>
     <thead>
       <tr>
         <th>Patient Name</th>
@@ -101,5 +102,6 @@
         </tr>
       {% endif %}
     </tbody>
-</table>
-{% endblock %}
+  </table>
+</body>
+</html>

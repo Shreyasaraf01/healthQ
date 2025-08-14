@@ -3,53 +3,52 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Hospital, Patient, Doctor
 from .serializers import HospitalSerializer, PatientSerializer, DoctorSerializer
+from django.http import JsonResponse
 from hospital.ai.ai_model import predict_queue, predict_bed
 from django.utils import timezone
 from django.contrib import messages
 from django.db import transaction
-from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
 import random
 import string
+from django.conf import settings
+api_key = settings.OMNIDIMENSION_API_KEY
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import json
-import requests
 
+
+import requests
 
 @csrf_exempt
 def health_bot_api(request):
-    """Chatbot API endpoint using Omnidimension API"""
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Invalid request'}, status=400)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_message = data.get('message', '')
 
-    try:
-        data = json.loads(request.body)
-        user_message = data.get('message', '')
+            # Send to Omnidimension API
+            response = requests.post(
+                "https://backend.omnidim.io/api/v1/chat",
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {settings.OMNIDIMENSION_API_KEY}"
+                },
+                json={
+                    "message": user_message
+                }
+            )
 
-        if not user_message.strip():
-            return JsonResponse({'error': 'Message cannot be empty'}, status=400)
+            if response.status_code == 200:
+                reply_data = response.json()
+                bot_reply = reply_data.get("reply", "Sorry, I couldn't process that.")
+                return JsonResponse({'reply': bot_reply})
+            else:
+                return JsonResponse({'error': 'Bot API error'}, status=500)
 
-        response = requests.post(
-            "https://backend.omnidim.io/api/v1/chat",
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {settings.OMNIDIMENSION_API_KEY}"
-            },
-            json={"message": user_message},
-            timeout=10
-        )
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
-        if response.status_code == 200:
-            reply_data = response.json()
-            bot_reply = reply_data.get("reply") or reply_data.get("answer") or "Sorry, I couldn't process that."
-            return JsonResponse({'reply': bot_reply})
-        else:
-            return JsonResponse({'error': f'Bot API error: {response.status_code}'}, status=response.status_code)
-
-    except requests.exceptions.Timeout:
-        return JsonResponse({'error': 'Bot API request timed out'}, status=504)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 # API views
@@ -83,10 +82,14 @@ def home(request):
 def dashboard(request):
     hospitals = Hospital.objects.all()
     patients = Patient.objects.count()
-    recent_patients = Patient.objects.order_by('-id')[:5]
+    recent_patients = Patient.objects.order_by('-id')[:5]  # Last 5 entries
 
-    hospital_names = [hospital.name for hospital in hospitals]
-    patient_counts = [Patient.objects.filter(hospital=hospital).count() for hospital in hospitals]
+    hospital_names = []
+    patient_counts = []
+
+    for hospital in hospitals:
+        hospital_names.append(hospital.name)
+        patient_counts.append(Patient.objects.filter(hospital=hospital).count())
 
     return render(request, 'hospital/dashboard.html', {
         'hospital_count': hospitals.count(),
@@ -104,6 +107,7 @@ def generate_token():
 def patient_register(request):
     if request.method == 'POST':
         try:
+            # Get form data
             name = request.POST.get('name')
             age = request.POST.get('age')
             dob = request.POST.get('dob')
@@ -116,12 +120,14 @@ def patient_register(request):
             appointment_date = request.POST.get('appointmentDate')
             hospital_id = request.POST.get('hospital')
 
+            # Validate phone numbers
             if phone == family_phone:
                 return render(request, 'hospital/patient_register.html', {
                     'error': 'Patient phone number and family phone number cannot be the same',
                     'hospitals': Hospital.objects.all()
                 })
 
+            # Get hospital
             try:
                 hospital = Hospital.objects.get(id=hospital_id)
             except Hospital.DoesNotExist:
@@ -130,8 +136,10 @@ def patient_register(request):
                     'hospitals': Hospital.objects.all()
                 })
 
+            # Generate token
             token = generate_token()
 
+            # Create patient record
             patient = Patient.objects.create(
                 name=name,
                 age=age,
@@ -148,25 +156,34 @@ def patient_register(request):
                 token=token
             )
 
+            # Handle critical patients
             if condition == 'Critical':
+                # Check if hospital has available beds
                 if hospital.available_beds > 0:
+                    # Admit patient directly
                     patient.status = 'Admitted'
                     patient.bed_number = hospital.total_beds - hospital.available_beds + 1
                     patient.save()
+                    
+                    # Update hospital bed count
                     hospital.available_beds -= 1
                     hospital.save()
+                    
                     return render(request, 'hospital/admitted.html', {
                         'patient': patient,
                         'hospital': hospital
                     })
                 else:
+                    # If no beds available, add to queue
                     patient.status = 'Waiting'
                     patient.save()
                     messages.warning(request, 'No beds available. Patient added to waiting list.')
             else:
+                # For stable patients, add to queue
                 patient.status = 'Waiting'
                 patient.save()
 
+            # Return success with token
             return render(request, 'hospital/patient_register.html', {
                 'token': token,
                 'hospitals': Hospital.objects.all()
@@ -178,10 +195,12 @@ def patient_register(request):
                 'hospitals': Hospital.objects.all()
             })
 
+    # GET request - show registration form
     return render(request, 'hospital/patient_register.html', {
         'hospitals': Hospital.objects.all()
     })
 
+# Queue Management View with AI Predictions
 def queue_management(request):
     patients = Patient.objects.filter(status='Waiting').order_by('registration_time')
 
@@ -204,19 +223,22 @@ def queue_management(request):
         'predictions': predictions,
     })
 
+# Bed Status View with AI Predictions
 def bed_status(request):
     hospitals = Hospital.objects.all()
     bed_predictions = []
     admitted_patients = Patient.objects.filter(status='Admitted')
 
     for hospital in hospitals:
+        # Count patients with status 'Discharged' for this hospital
         discharged_count = Patient.objects.filter(hospital=hospital, status='Discharged').count()
+
         bed_predictions.append({
             'ward': hospital.name,
             'total_beds': hospital.total_beds,
             'occupied': hospital.total_beds - hospital.available_beds,
             'available': hospital.available_beds,
-            'predicted_discharges': discharged_count
+            'predicted_discharges': discharged_count  # Now shows actual discharges
         })
 
     return render(request, 'hospital/bed_status.html', {
@@ -224,17 +246,21 @@ def bed_status(request):
         'admitted_patients': admitted_patients
     })
 
+# Doctor Assignment View
 def doctor_assignment(request):
     doctors = Doctor.objects.all()  
     return render(request, 'hospital/doctor_assignment.html', {'doctors': doctors})
 
+# Contact Us View
 def contact_us(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         email = request.POST.get('email')
         phone = request.POST.get('phone')
         message = request.POST.get('message')
-
+        
+        # Here you can add code to save the contact form data to a database
+        # For now, we'll just show a success message
         messages.success(request, 'Thank you for your message! We will get back to you soon.')
         return redirect('contact_us')
         

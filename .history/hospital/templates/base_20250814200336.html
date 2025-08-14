@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %}HealthQ{% endblock %}</title>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    {% block show_navbar %}
+    <nav class="bg-blue-600 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'home' %}" class="text-white font-bold text-xl">HealthQ</a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'home' %}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="{% url 'patient_register' %}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Register Patient</a>
+                        <a href="{% url 'queue_management' %}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Queue</a>
+                        <a href="{% url 'bed_status' %}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Bed Status</a>
+                        <a href="{% url 'doctor_assignment' %}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Doctors</a>
+                        <a href="{% url 'contact_us' %}" class="text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endblock %}
+
+    <main class="flex-grow">
+        {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 mt-4">
+            {% for message in messages %}
+                <div class="p-4 mb-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">HealthQ</h3>
+                    <p class="text-gray-400">Providing quality healthcare management solutions.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'home' %}" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="{% url 'contact_us' %}" class="text-gray-400 hover:text-white">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Info</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Email: info@healthq.com</li>
+                        <li>Phone: +1 234 567 890</li>
+                        <li>Address: 123 Healthcare St, Medical City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                &copy; 2025 HealthQ. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Health Bot Widget -->
+    <div id="health-bot" class="fixed bottom-6 right-6 z-50">
+      <button id="bot-toggle" class="bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg">Health Bot</button>
+      <div id="bot-window" class="hidden bg-white border border-gray-300 rounded-lg shadow-lg w-80 h-96 flex flex-col">
+        <div class="p-2 border-b font-bold text-blue-700">Health Bot</div>
+        <div id="bot-messages" class="flex-1 p-2 overflow-y-auto text-sm"></div>
+        <form id="bot-form" class="p-2 border-t flex">
+          <input id="bot-input" type="text" class="flex-1 border rounded px-2 py-1 mr-2" placeholder="Ask me anything..." autocomplete="off">
+          <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded">Send</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      const toggle = document.getElementById('bot-toggle');
+      const windowEl = document.getElementById('bot-window');
+      const form = document.getElementById('bot-form');
+      const input = document.getElementById('bot-input');
+      const messages = document.getElementById('bot-messages');
+
+      toggle.onclick = () => windowEl.classList.toggle('hidden');
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const userMsg = input.value.trim();
+        if (!userMsg) return;
+        messages.innerHTML += `<div class="mb-2"><b>You:</b> ${userMsg}</div>`;
+        const typingId = 'bot-typing-' + Date.now() + Math.random();
+        messages.innerHTML += `<div class="mb-2 text-blue-700"><b>Bot:</b> <span id="${typingId}">...</span></div>`;
+        messages.scrollTop = messages.scrollHeight;
+        input.value = '';
+        try {
+          const response = await fetch("{% url 'health_bot_api' %}", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({message: userMsg})
+          });
+          const data = await response.json();
+          const typingElem = document.getElementById(typingId);
+          if (typingElem) {
+            typingElem.parentElement.innerHTML = `<b>Bot:</b> ${data.reply}`;
+          }
+          messages.scrollTop = messages.scrollHeight;
+        } catch {
+          const typingElem = document.getElementById(typingId);
+          if (typingElem) {
+            typingElem.parentElement.innerHTML = `<b>Bot:</b> Sorry, I couldn't connect to the health bot.`;
+          }
+        }
+      };
+    </script>
+
+    <!-- Omnidimension Chat Widget -->
+    <script id="omnidimension-web-widget" async src="https://backend.omnidim.io/web_widget.js?secret_key=dc21e2739a6bf48ca8d60e82431dbba5"></script>
+</body>
+</html>

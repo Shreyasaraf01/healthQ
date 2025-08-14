@@ -96,30 +96,21 @@
     <div class="container mt-5">
         <h2 class="text-center mb-4">Our Specialities</h2>
         <div class="row text-center">
+            {% for speciality, image, title in [
+                ('cardiology', 'cardio.jpeg', 'Cardiology'),
+                ('neurology', 'neuro.jpeg', 'Neurology'),
+                ('orthopedics', 'ortho.jpeg', 'Orthopedics'),
+                ('pediatrics', 'pedia.jpeg', 'Pediatrics')
+            ] %}
             <div class="col-md-3 mb-3">
-                <div class="card h-100 shadow-sm specialist-card" data-speciality="cardiology">
-                    <img src="{% static 'cardio.jpeg' %}" class="card-img-top" alt="Cardiology">
-                    <div class="card-body"><h5 class="card-title">Cardiology</h5></div>
+                <div class="card h-100 shadow-sm specialist-card" data-speciality="{{ speciality }}">
+                    <img src="{% static image %}" class="card-img-top" alt="{{ title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ title }}</h5>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-3 mb-3">
-                <div class="card h-100 shadow-sm specialist-card" data-speciality="neurology">
-                    <img src="{% static 'neuro.jpeg' %}" class="card-img-top" alt="Neurology">
-                    <div class="card-body"><h5 class="card-title">Neurology</h5></div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card h-100 shadow-sm specialist-card" data-speciality="orthopedics">
-                    <img src="{% static 'ortho.jpeg' %}" class="card-img-top" alt="Orthopedics">
-                    <div class="card-body"><h5 class="card-title">Orthopedics</h5></div>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="card h-100 shadow-sm specialist-card" data-speciality="pediatrics">
-                    <img src="{% static 'pedia.jpeg' %}" class="card-img-top" alt="Pediatrics">
-                    <div class="card-body"><h5 class="card-title">Pediatrics</h5></div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 

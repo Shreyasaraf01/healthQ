@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Patient</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 12px;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+
+
+        .success-message {
+            margin-top: 20px;
+            text-align: center;
+            color: #28a745;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #d4edda;
+        }
+
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f8d7da;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Register Patient</h2>
+        <form method="post" id="patientForm">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="name" class="required-field">Patient Name</label>
+                <input type="text" name="name" id="name" placeholder="Enter patient name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="age" class="required-field">Age</label>
+                <input type="number" name="age" id="age" placeholder="Enter age" min="0" max="120" required>
+                <div class="help-text">Please enter age between 0 and 120</div>
+            </div>
+
+            <div class="form-group">
+                <label for="dob" class="required-field">Date of Birth</label>
+                <input type="date" name="dob" id="dob" required>
+            </div>
+
+            <div class="form-group">
+                <label for="condition" class="required-field">Patient Condition</label>
+                <select name="condition" id="condition" required>
+                    <option value="">Select Condition</option>
+                    <option value="Stable">Stable</option>
+                    <option value="Critical">Critical</option>
+                </select>
+                <div class="help-text">Critical patients will be admitted directly</div>
+            </div>
+
+            <div class="form-group">
+                <label for="situation" class="required-field">Current Situation</label>
+                <textarea name="situation" id="situation" rows="2" placeholder="Describe the patient's current condition" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="symptoms" class="required-field">Symptoms</label>
+                <textarea name="symptoms" id="symptoms" rows="3" placeholder="List all symptoms" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="required-field">Email ID</label>
+                <input type="email" name="email" id="email" placeholder="Enter email address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone" class="required-field">Phone Number</label>
+                <input type="tel" name="phone" id="phone" placeholder="Enter 10-digit phone number" required pattern="[0-9]{10}">
+                <div class="help-text">Enter a valid 10-digit phone number</div>
+            </div>
+
+            <div class="form-group">
+                <label for="familyPhone" class="required-field">Family Mobile Number</label>
+                <input type="tel" name="familyPhone" id="familyPhone" placeholder="Enter 10-digit family phone number" required pattern="[0-9]{10}">
+                <div class="help-text">Enter a valid 10-digit phone number</div>
+            </div>
+
+            <div class="form-group">
+                <label for="appointmentDate" class="required-field">Date of Appointment</label>
+                <input type="date" name="appointmentDate" id="appointmentDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="hospital" class="required-field">Select Hospital</label>
+                <select name="hospital" id="hospital" required>
+                    <option value="">Select Hospital</option>
+                    {% for hospital in hospitals %}
+                        <option value="{{ hospital.id }}">{{ hospital.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit">Register Patient</button>
+        </form>
+
+        {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        {% if token %}
+            <div class="success-message">
+                Patient registered successfully!<br>
+                Generated Token: <strong>{{ token }}</strong>
+            </div>
+        {% endif %}
+
+        <div class="back-button">
+            <a href="{% url 'home' %}">← Go Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Set minimum date for appointment to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('appointmentDate').min = today;
+
+        // Form validation
+        document.getElementById('patientForm').addEventListener('submit', function(e) {
+            const phone = document.getElementById('phone').value;
+            const familyPhone = document.getElementById('familyPhone').value;
+            
+            if (phone === familyPhone) {
+                e.preventDefault();
+                alert('Patient phone number and family phone number cannot be the same');
+            }
+        });
+    </script>
+
+    <!-- ✅ Chatbot widget script -->
+    <script id="omnidimension-web-widget" async src="https://backend.omnidim.io/web_widget.js?secret_key=dc21e2739a6bf48ca8d60e82431dbba5"></script>
+</body>
+</html>
