@@ -1,14 +1,7 @@
-# 🏥 HealthQ: AI-Powered Hospital Queue and Resource Management System.
+# 🏥 HealthQ: AI-Powered Hospital Queue Management System.
 
 ## 📋 Overview
-HealthQ is an intelligent hospital management system that leverages AI to optimize patient flow, predict wait times, and manage hospital resources efficiently. The system helps reduce waiting times, improve resource allocation, and enhance overall patient experience.
-
-## 🧠 Team: The Avalanche
-- **Riya Saraf** (Leader) – III Year, Baderia Global Institute of Engineering and Management  
-- **Shreya Saraf** – III Year  
-- **Sonam Nimje** – III Year  
-- **Sameeksha Vishwakarma** – III Year  
-
+HealthQ is an intelligent hospital management system that leverages AI to optimize patient flow and predict wait timesefficiently. The system helps reduce waiting times, improve resource allocation, and enhance overall patient experience.
 
 ## 🎯 Key Features
 
@@ -24,8 +17,6 @@ HealthQ is an intelligent hospital management system that leverages AI to optimi
 ### 2. Smart Bed Management
 - Real-time bed availability tracking
 - Predictive analytics for bed allocation
-- Historical discharge pattern analysis
-- Department-wise bed utilization statistics
 
 ### 3. Queue Management
 - Digital queue system for OPD
@@ -33,16 +24,8 @@ HealthQ is an intelligent hospital management system that leverages AI to optimi
 - Real-time queue updates
 - Estimated wait time display
 
-### 4. Resource Optimization
-- Department-wise resource allocation
-- Staff scheduling assistance
-- Equipment utilization tracking
-- Emergency resource planning
-
-
 ### 5. City-Wide Integration
 - Unified dashboard for multiple hospitals across the city
-- Inter-hospital resource coordination and referral management
 - Centralized monitoring of OPD queues, bed occupancy, and emergency capacity
 - Scalable architecture for expansion across urban healthcare networks
 
@@ -170,4 +153,4 @@ For support, email: shreyasaraf765@gmail.com
 
 ---
 
-Made with ❤️ by Team Avalanche
+Made with ❤️ by Shreya
