@@ -24,7 +24,7 @@ HealthQ is an intelligent hospital management system that leverages AI to optimi
 - Real-time queue updates
 - Estimated wait time display
 
-### 5. City-Wide Integration
+### 4. City-Wide Integration
 - Unified dashboard for multiple hospitals across the city
 - Centralized monitoring of OPD queues, bed occupancy, and emergency capacity
 - Scalable architecture for expansion across urban healthcare networks
@@ -69,7 +69,7 @@ HealthQ is an intelligent hospital management system that leverages AI to optimi
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/Shreyasaraf01/healthQ.git
+git clone https://github.com/sonamnimje/healthQ.git
 cd healthQ
 ```
 
@@ -146,11 +146,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Inspired by the need for better healthcare management systems
 
 ---
-
-## 📞 Support
-
-For support, email: shreyasaraf765@gmail.com
-
----
-
-Made with ❤️ by Shreya
